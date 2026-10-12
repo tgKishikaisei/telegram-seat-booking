@@ -1,0 +1,169 @@
+/* Схема зала «Акустики». Поверхности — из темы Telegram (светлой или тёмной),
+   акценты — материалы зала: бархат партера, патина амфитеатра, сумерки балкона, латунь выбора. */
+:root {
+  --bg: var(--tg-theme-bg-color, #ffffff);
+  --surface: var(--tg-theme-secondary-bg-color, #f1f1f4);
+  --text: var(--tg-theme-text-color, #19181d);
+  --hint: var(--tg-theme-hint-color, #85848c);
+  --link: var(--tg-theme-link-color, #8c2f45);
+  --danger: var(--tg-theme-destructive-text-color, #c0392b);
+
+  --velvet: #8c2f45;
+  --patina: #2f6f73;
+  --dusk: #5b5f97;
+  --brass: #d4a93a;
+  --brass-ink: #2a2005;
+  --taken: color-mix(in srgb, var(--hint) 30%, transparent);
+
+  --seat: 22px;
+  --gap: 4px;
+  --radius: 14px;
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  --sans: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-tg]) { --bg: #141317; --surface: #1f1e24; --text: #ecebf0; --hint: #8f8e97; }
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.45 var(--sans);
+  -webkit-font-smoothing: antialiased;
+  padding: 0 16px calc(24px + env(safe-area-inset-bottom));
+}
+
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--brass); outline-offset: 2px; }
+
+.top {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+  padding: 14px 0 6px;
+}
+.venue {
+  margin: 0; color: var(--hint);
+  font-variant-caps: all-small-caps; letter-spacing: .09em; font-size: 15px;
+}
+.top-actions { display: flex; gap: 14px; }
+.link { background: none; border: 0; padding: 4px 0; color: var(--link); cursor: pointer; }
+
+h1 {
+  font: italic 500 26px/1.15 var(--serif);
+  margin: 10px 0 4px;
+  letter-spacing: -.01em;
+}
+.sub { color: var(--hint); margin: 0 0 16px; }
+
+/* ---------- афиша ---------- */
+.show {
+  width: 100%; display: grid; grid-template-columns: 64px 1fr auto; gap: 14px; align-items: center;
+  text-align: left; background: var(--surface); border: 0; border-radius: var(--radius);
+  padding: 14px; margin-bottom: 10px; cursor: pointer;
+}
+.show-when { display: flex; flex-direction: column; align-items: center; }
+.show-date { font: italic 600 20px/1 var(--serif); }
+.show-time { color: var(--hint); font-variant-numeric: tabular-nums; margin-top: 4px; }
+.show-title { display: block; font-weight: 600; }
+.show-desc { display: block; color: var(--hint); font-size: 13px; margin-top: 2px; }
+.show-free { font-size: 13px; color: var(--hint); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.show[disabled] { opacity: .5; cursor: default; }
+
+/* ---------- зал ---------- */
+.hall { position: relative; margin: 6px -16px 0; padding: 0 8px 8px; overflow-x: auto; }
+
+.stage {
+  position: relative; height: 64px; margin: 0 auto 14px; max-width: 360px;
+}
+.stage svg { display: block; width: 100%; height: 34px; }
+.stage-label {
+  position: absolute; top: 8px; left: 0; right: 0; text-align: center;
+  font-variant-caps: all-small-caps; letter-spacing: .3em; color: var(--hint); font-size: 13px;
+}
+/* «Свет рампы» — тёплое пятно, которое падает со сцены на первые ряды */
+.stage::after {
+  content: ""; position: absolute; left: 6%; right: 6%; top: 26px; height: 120px; pointer-events: none;
+  background: radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--brass) 26%, transparent), transparent 70%);
+  animation: footlights 5s ease-in-out infinite alternate;
+}
+@keyframes footlights { from { opacity: .65; } to { opacity: 1; } }
+
+.rows { display: grid; gap: 8px; justify-content: center; }
+.row { display: flex; align-items: center; gap: 6px; }
+.row-label {
+  width: 18px; text-align: center; color: var(--hint); font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+.seats { display: flex; gap: var(--gap); }
+.aisle { width: calc(var(--seat) * .7); }
+
+.seat {
+  --zone: var(--velvet);
+  width: var(--seat); height: calc(var(--seat) * .9); padding: 0;
+  border: 2px solid var(--zone); border-radius: 7px 7px 3px 3px;
+  background: transparent; cursor: pointer;
+  transform: translateY(var(--lift, 0px));
+  transition: background-color .15s, border-color .15s, transform .15s;
+}
+.seat[data-zone="B"] { --zone: var(--patina); }
+.seat[data-zone="C"] { --zone: var(--dusk); }
+.seat:hover { background: color-mix(in srgb, var(--zone) 22%, transparent); }
+.seat[aria-pressed="true"] {
+  background: var(--brass); border-color: var(--brass);
+  transform: translateY(calc(var(--lift, 0px) - 2px));
+  box-shadow: 0 3px 10px color-mix(in srgb, var(--brass) 45%, transparent);
+}
+.seat:disabled { background: var(--taken); border-color: transparent; cursor: not-allowed; }
+
+.legend { display: flex; flex-wrap: wrap; gap: 8px 16px; justify-content: center; margin: 18px 0 6px; font-size: 13px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 12px; height: 11px; border-radius: 4px 4px 2px 2px; border: 2px solid var(--velvet); }
+.legend .z-B i { border-color: var(--patina); }
+.legend .z-C i { border-color: var(--dusk); }
+.legend .z-taken i { background: var(--taken); border-color: transparent; }
+.legend .z-mine i { background: var(--brass); border-color: var(--brass); }
+
+/* ---------- выбор и бронь ---------- */
+.summary {
+  margin-top: 14px; background: var(--surface); border-radius: var(--radius); padding: 12px 14px;
+}
+.summary-empty { color: var(--hint); margin: 0; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 8px; padding: 0; list-style: none; }
+.chip {
+  font-size: 13px; padding: 3px 9px; border-radius: 999px; background: var(--bg);
+  font-variant-numeric: tabular-nums;
+}
+.total { display: flex; justify-content: space-between; align-items: baseline; }
+.total strong { font: italic 600 20px/1 var(--serif); }
+.timer { color: var(--hint); font-size: 13px; font-variant-numeric: tabular-nums; margin-top: 6px; }
+.timer.urgent { color: var(--danger); }
+
+/* ---------- билеты и сообщения ---------- */
+.ticket {
+  display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; padding: 14px;
+  background: var(--surface); border-radius: var(--radius); margin-bottom: 10px;
+  border-left: 4px solid var(--brass);
+}
+.ticket.used { opacity: .55; border-left-color: var(--hint); }
+.ticket-title { font-weight: 600; }
+.ticket-when { color: var(--hint); font-variant-numeric: tabular-nums; }
+.ticket-seat { grid-column: 1 / -1; color: var(--hint); font-size: 13px; }
+
+.note { text-align: center; color: var(--hint); padding: 40px 12px; }
+.note strong { display: block; color: var(--text); font: italic 500 20px/1.2 var(--serif); margin-bottom: 8px; }
+.error {
+  background: color-mix(in srgb, var(--danger) 12%, transparent); color: var(--danger);
+  border-radius: 10px; padding: 10px 12px; margin: 10px 0;
+}
+.button {
+  display: block; width: 100%; border: 0; border-radius: 12px; padding: 13px;
+  background: var(--tg-theme-button-color, var(--velvet)); color: var(--tg-theme-button-text-color, #fff);
+  font-weight: 600; cursor: pointer; margin-top: 12px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage::after { animation: none; }
+  .seat { transition: none; }
+}

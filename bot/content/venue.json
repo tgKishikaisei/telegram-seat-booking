@@ -1,0 +1,42 @@
+{
+  "venue": "Камерный зал «Акустика»",
+  "halls": {
+    "main": {
+      "name": "Большой зал",
+      "zones": {
+        "A": {"name": "Партер", "price": 180},
+        "B": {"name": "Амфитеатр", "price": 120},
+        "C": {"name": "Балкон", "price": 70}
+      },
+      "rows": [
+        "__AAAAAA_AAAAAA__",
+        "_AAAAAAA_AAAAAAA_",
+        "AAAAAAAA_AAAAAAAA",
+        "AAAAAAAA_AAAAAAAA",
+        "BBBBBBBB_BBBBBBBB",
+        "BBBBBBBB_BBBBBBBB",
+        "BBBBBBBBBBBBBBBBB",
+        "_CCCCCCCCCCCCCCC_",
+        "__CCCCCCCCCCCCC__"
+      ]
+    }
+  },
+  "events": [
+    {
+      "code": "jazz_quartet",
+      "title": "Джаз-квартет «Полночь»",
+      "description": "Стандарты и авторские пьесы. Два отделения с антрактом.",
+      "hall": "main",
+      "duration_min": 110,
+      "sessions": ["2026-10-24T19:30", "2026-10-25T19:30", "2026-11-07T19:30"]
+    },
+    {
+      "code": "seagull",
+      "title": "Чехов. «Чайка»",
+      "description": "Камерная постановка в четырёх действиях. 14+",
+      "hall": "main",
+      "duration_min": 150,
+      "sessions": ["2026-10-31T18:00", "2026-11-01T18:00", "2026-11-14T18:00"]
+    }
+  ]
+}
