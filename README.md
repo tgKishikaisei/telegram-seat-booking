@@ -90,3 +90,16 @@ python -m pytest -q
 Покрыты: схема зала и ошибки в ней, синхронизация афиши, правила брони, скрытие чужих броней, гонка трёх зрителей за одни места (на файловой базе), оплата со всеми отказами `pre_checkout` и идемпотентностью, автовозврат, вход по билету (рано, подделка, повтор), возврат заказа, API целиком через TestClient.
 
 Сборка Docker-образа проверяется в CI. Вживую с Telegram и боевыми платежами проект не обкатывался.
+
+## Обновление зависимостей
+
+Точные версии с хешами лежат в `requirements.lock`, из него собирается Docker-образ и ставится CI. Чтобы обновить один пакет (например, после уязвимости, которую нашёл `pip-audit`):
+
+```bash
+pip install uv pip-audit
+uv pip compile requirements.txt --universal --generate-hashes --python-version 3.12 -o requirements.lock --upgrade-package certifi
+pip-audit -r requirements.lock --require-hashes --disable-pip
+python -m pytest -q
+```
+
+`--upgrade-package` меняет только указанный пакет, остальные версии остаются прежними. Свежие релизы лучше брать не раньше чем через несколько дней после выхода — так же настроен `renovate.json`. После обновления пересоберите образ: `docker compose up -d --build`.
